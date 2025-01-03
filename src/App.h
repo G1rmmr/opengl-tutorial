@@ -13,17 +13,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "App.h"
+#pragma once
 
-int main()
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+
+#include <memory>
+#include <cstdint>
+#include <string_view>
+
+inline constexpr std::string_view APP_TITLE = "OpenGL Window";
+
+inline constexpr std::uint16_t WINDOW_WIDTH = 800;
+inline constexpr std::uint16_t WINDOW_HEIGHT = 600;
+
+class App
 {
-    App app;
-    
-    if(!app.Init())
-        return -1;
+public:
+    App() = default;
+    ~App();
 
-    while(app.IsRunning())
-        app.Run();
-    
-    return 0;
-}
+    bool Init();
+    void Run();
+    void Render();
+
+    inline bool IsRunning() const
+    {
+        return !glfwWindowShouldClose(window);
+    }
+
+private:
+    GLFWwindow* window;
+};
