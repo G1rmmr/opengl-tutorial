@@ -15,10 +15,13 @@
 
 #pragma once
 
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#include "glad.h"
 
-#include <memory>
+#include <GLFW/glfw3.h>
+
+#include "Shader.h"
+#include "Camera.h"
+
 #include <cstdint>
 #include <string_view>
 
@@ -30,12 +33,11 @@ inline constexpr std::uint16_t WINDOW_HEIGHT = 600;
 class App
 {
 public:
-    App() = default;
+    App();
     ~App();
 
     bool Init();
     void Run();
-    void Render();
 
     inline bool IsRunning() const
     {
@@ -44,4 +46,37 @@ public:
 
 private:
     GLFWwindow* window;
+    Shader* shader;
+
+    Camera cam;
+
+    float last_x;
+    float last_y;
+
+    float yaw;
+    float pitch;
+
+    float dt;
+    float last_frame;
+
+    unsigned int vao;
+    unsigned int vbo;
+
+    bool first_mouse;
+
+    void Render();
+
+    void ProcessInput(GLFWwindow* window);
+    void MouseCallback(GLFWwindow* window, double x, double y);
+
+    inline static void CursorPosCallback(GLFWwindow* window, double x, double y)
+    {
+        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        if(app) app->MouseCallback(window, x, y);
+    }
+
+    inline static void FramebufSizeCallback(GLFWwindow* window, int w, int h)
+    {
+        glViewport(0, 0, w, h);
+    }
 };

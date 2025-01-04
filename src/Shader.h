@@ -18,6 +18,7 @@
 #include <string>
 
 #include "glad.h"
+#include <glm/gtc/type_ptr.hpp>
 
 struct Shader
 {
@@ -25,6 +26,7 @@ struct Shader
 
     Shader(const char* vtx_path, const char* frag_path);
 
-    void use();
-    void setMat4(const std::string &name, const glm::mat4 &mat) const;
+    void Use();
+    void SetMat(const std::string& name, const glm::mat4& mat) const;
+    void SetVec(const std::string &name, const glm::vec3& vec) const;
 };

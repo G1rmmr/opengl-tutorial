@@ -19,8 +19,6 @@
 #include <sstream>
 #include <cstdio>
 
-#include <glm/gtc/type_ptr.hpp>
-
 Shader::Shader(const char* vtx_path, const char* frag_path)
 {
     std::string vtx_code;
@@ -89,10 +87,27 @@ Shader::Shader(const char* vtx_path, const char* frag_path)
     glGetProgramiv(id, GL_LINK_STATUS, &success);
     if(!success)
     {
-        glGetProgramInfoLog(ID, 512, NULL, info);
+        glGetProgramInfoLog(id, 512, NULL, info);
         fprintf(stderr, "ERROR::SHADER::PROGRAM::LINKING_FAILED\n : %s", info);
     }
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+}
+
+void Shader::Use()
+{
+    glUseProgram(id);
+}
+
+void Shader::SetMat(const std::string& name, const glm::mat4& mat) const
+{
+    glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()),
+        1, GL_FALSE, &mat[0][0]);
+}
+
+void Shader::SetVec(const std::string &name, const glm::vec3& vec) const
+{
+    glUniform3fv(glGetUniformLocation(id, name.c_str()),
+        1, glm::value_ptr(vec));
 }
