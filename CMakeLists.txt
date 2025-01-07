@@ -3,13 +3,9 @@ project(opengl)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(SOURCES
-    src/main.cpp
-    src/App.cpp
-    src/Shader.cpp
-    src/glad.c
-    src/Camera.cpp
-)
+file(GLOB SOURCES
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/*.c")
 
 add_definitions(-DGL_SILENCE_DEPRECATION)
 

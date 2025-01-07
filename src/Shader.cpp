@@ -27,8 +27,8 @@ Shader::Shader(const char* vtx_path, const char* frag_path)
     std::ifstream v_shader;
     std::ifstream f_shader;
 
-    v_shader.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-    f_shader.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    v_shader.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    f_shader.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
     try 
     {
