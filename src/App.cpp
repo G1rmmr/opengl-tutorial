@@ -80,7 +80,9 @@ bool App::Init()
     const GLubyte* renderer = glGetString(GL_RENDERER);
     printf("Renderer : %s\n", renderer);
 
-    GLint width, height;
+    GLint width;
+    GLint height;
+
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
