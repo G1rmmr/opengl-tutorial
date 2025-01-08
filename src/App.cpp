@@ -32,7 +32,7 @@ App::~App()
     glfwTerminate();
 }
 
-bool App::Init()
+GLboolean App::Init()
 {
     if(!glfwInit())
     {
@@ -107,7 +107,7 @@ void App::Run()
 {
     while(!glfwWindowShouldClose(window))
     {
-        float curr_frame = static_cast<float>(glfwGetTime());
+        GLfloat curr_frame = static_cast<GLfloat>(glfwGetTime());
         dt = curr_frame - last_frame;
         last_frame = curr_frame;
 
@@ -124,10 +124,12 @@ void App::Render()
 
     shader->Use();
 
+    GLfloat aspect = static_cast<GLfloat>(WINDOW_WIDTH) / static_cast<GLfloat>(WINDOW_HEIGHT);
+
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = cam->GetViewMatrix();
-    glm::mat4 proj = glm::perspective(glm::radians(cam->zoom), 
-        (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(cam->zoom),
+        aspect, 0.1f, 100.0f);
 
     shader->SetMat("proj", proj);
     shader->SetMat("view", view);
@@ -156,20 +158,20 @@ void App::ProcessInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 }
 
-void App::MouseCallback(GLFWwindow* window, double x, double y)
+void App::MouseCallback(GLFWwindow* window, GLdouble x, GLdouble y)
 {
     if(first_mouse)
     {
-        last_x = static_cast<float>(x);
-        last_y = static_cast<float>(y);
+        last_x = static_cast<GLfloat>(x);
+        last_y = static_cast<GLfloat>(y);
         first_mouse = false;
     }
 
-    float off_x = static_cast<float>(x) - last_x;
-    float off_y = last_y - static_cast<float>(y);
+    GLfloat off_x = static_cast<GLfloat>(x) - last_x;
+    GLfloat off_y = last_y - static_cast<GLfloat>(y);
 
-    last_x = static_cast<float>(x);
-    last_y = static_cast<float>(y);
+    last_x = static_cast<GLfloat>(x);
+    last_y = static_cast<GLfloat>(y);
 
     cam->ProcessMouseMovement(off_x, off_y);
 }

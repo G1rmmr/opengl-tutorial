@@ -16,6 +16,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "glad.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -24,7 +25,7 @@ struct Shader
 {
     GLuint id;
 
-    Shader(const char* vtx_path, const char* frag_path);
+    Shader(const std::string_view& vtx_path, const std::string_view& frag_path);
 
     void Use();
     void SetMat(const std::string& name, const glm::mat4& mat) const;

@@ -28,7 +28,6 @@
 #include "Manager.h"
 
 inline constexpr std::string_view APP_TITLE = "OpenGL Window";
-
 inline constexpr GLushort WINDOW_WIDTH = 800;
 inline constexpr GLushort WINDOW_HEIGHT = 600;
 
@@ -38,10 +37,10 @@ public:
     App();
     ~App();
 
-    bool Init();
+    GLboolean Init();
     void Run();
 
-    inline bool IsRunning() const
+    inline GLboolean IsRunning() const
     {
         return !glfwWindowShouldClose(window);
     }
@@ -67,15 +66,15 @@ private:
     void Render();
 
     void ProcessInput(GLFWwindow* window);
-    void MouseCallback(GLFWwindow* window, double x, double y);
+    void MouseCallback(GLFWwindow* window, GLdouble x, GLdouble y);
 
-    inline static void CursorPosCallback(GLFWwindow* window, double x, double y)
+    inline static void CursorPosCallback(GLFWwindow* window, GLdouble x, GLdouble y)
     {
         App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
         if(app) app->MouseCallback(window, x, y);
     }
 
-    inline static void FramebufSizeCallback(GLFWwindow* window, int w, int h)
+    inline static void FramebufSizeCallback(GLFWwindow* window, GLint w, GLint h)
     {
         glViewport(0, 0, w, h);
     }

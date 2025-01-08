@@ -19,7 +19,7 @@
 #include <sstream>
 #include <cstdio>
 
-Shader::Shader(const char* vtx_path, const char* frag_path)
+Shader::Shader(const std::string_view& vtx_path, const std::string_view& frag_path)
 {
     std::string vtx_code;
     std::string frag_code;
@@ -50,12 +50,13 @@ Shader::Shader(const char* vtx_path, const char* frag_path)
         fprintf(stderr, "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n");
     }
 
-    const char* v_shader_code = vtx_code.c_str();
-    const char * f_shader_code = frag_code.c_str();
+    const GLchar* v_shader_code = vtx_code.c_str();
+    const GLchar* f_shader_code = frag_code.c_str();
 
-    unsigned int vertex, fragment;
-    int success;
-    char info[512];
+    GLuint vertex;
+    GLuint fragment;
+    GLint success;
+    GLchar info[512];
 
     vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex, 1, &v_shader_code, NULL);
@@ -106,7 +107,7 @@ void Shader::SetMat(const std::string& name, const glm::mat4& mat) const
         1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::SetVec(const std::string &name, const glm::vec3& vec) const
+void Shader::SetVec(const std::string& name, const glm::vec3& vec) const
 {
     glUniform3fv(glGetUniformLocation(id, name.c_str()),
         1, glm::value_ptr(vec));
