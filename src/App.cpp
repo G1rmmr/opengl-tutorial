@@ -105,16 +105,14 @@ GLboolean App::Init()
 
 void App::Run()
 {
-    while(!glfwWindowShouldClose(window))
-    {
-        GLfloat curr_frame = static_cast<GLfloat>(glfwGetTime());
-        dt = curr_frame - last_frame;
-        last_frame = curr_frame;
+    GLfloat curr_frame = static_cast<GLfloat>(glfwGetTime());
+    dt = curr_frame - last_frame;
+    last_frame = curr_frame;
 
-        ProcessInput(window);
-        Render();
-        glfwPollEvents();
-    }
+    ProcessInput(window);
+    manager->Update(dt);
+    Render();
+    glfwPollEvents();
 }
 
 void App::Render()
@@ -124,12 +122,11 @@ void App::Render()
 
     shader->Use();
 
-    GLfloat aspect = static_cast<GLfloat>(WINDOW_WIDTH) / static_cast<GLfloat>(WINDOW_HEIGHT);
-
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = cam->GetViewMatrix();
     glm::mat4 proj = glm::perspective(glm::radians(cam->zoom),
-        aspect, 0.1f, 100.0f);
+        static_cast<GLfloat>(WINDOW_WIDTH) / static_cast<GLfloat>(WINDOW_HEIGHT),
+        0.1f, 100.0f);
 
     shader->SetMat("proj", proj);
     shader->SetMat("view", view);

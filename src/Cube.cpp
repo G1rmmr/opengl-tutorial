@@ -32,6 +32,11 @@ void Cube::Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj
     glBindVertexArray(0);
 }
 
+void Cube::Update(GLfloat dt, const glm::mat4& world_form)
+{
+    Rotate(2.f, {0.f, 1.f, 0.f});
+}
+
 void Cube::Init()
 {
     glGenVertexArrays(1, &vao);
