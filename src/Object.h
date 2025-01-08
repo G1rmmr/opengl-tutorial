@@ -49,11 +49,12 @@ public:
         pos = _pos;
     }
 
-    inline void SetRot(const glm::vec3& _rot) { 
+    inline void SetRot(const glm::vec3& _rot)
+    { 
         rot = glm::quat(glm::radians(_rot));
     }
 
-    inline void Rotate(float angle, const glm::vec3& axis)
+    inline void Rotate(GLfloat angle, const glm::vec3& axis)
     {
         glm::quat delta = glm::angleAxis(glm::radians(angle), glm::normalize(axis));
         rot = delta * rot;
@@ -70,6 +71,7 @@ public:
     }
 
     virtual void Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj) = 0;
+    virtual void Update(GLfloat dt, const glm::mat4& world_form) = 0;
 
 protected:
     glm::mat4 mat;

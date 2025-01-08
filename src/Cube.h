@@ -34,17 +34,18 @@ public:
     }
 
     void Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj) override;
+    void Update(GLfloat dt, const glm::mat4& world_form) override;
 
 private:
     std::array<GLfloat, 48> vertices = {
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.5f,
-        -0.5f,  0.5f,  0.5f,  0.2f, 0.8f, 0.2f
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f
     };
 
     std::array<GLuint, 36> indices = {

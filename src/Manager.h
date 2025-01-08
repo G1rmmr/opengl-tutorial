@@ -32,6 +32,15 @@ struct Scene
         children.emplace_back(std::make_shared<Scene>(child));
     }
 
+    void Update(GLfloat dt, const glm::mat4& parent_form)
+    {
+        glm::mat4 world_form = parent_form * object->GetMatrix();
+        object->Update(dt, world_form);
+
+        for(auto& child : children)
+            child->Update(dt, world_form);
+    }
+
     void Draw(GLuint shader_prog, const glm::mat4& parent_form, const glm::mat4& view, const glm::mat4& proj)
     {
         glm::mat4 world_form = parent_form * object->GetMatrix();
@@ -71,6 +80,15 @@ public:
         {
             glm::mat4 id = glm::mat4(1.0f);
             scene->Draw(shader_prog, id, view, proj);
+        }
+    }
+
+    void Update(float dt)
+    {
+        if(scene && scene->object)
+        {
+            glm::mat4 id= glm::mat4(1.0f);
+            scene->Update(dt, id);
         }
     }
 
