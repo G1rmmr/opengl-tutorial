@@ -20,11 +20,11 @@ glm::mat4 Camera::GetViewMatrix()
     return glm::lookAt(pos, pos + front, up);
 }
 
-void Camera::ProcessKeyboard(Movement dir, float dt)
+void Camera::ProcessKeyboard(Movement dir, GLfloat dt)
 {
-    float vel = speed * dt;
+    GLfloat vel = speed * dt;
 
-    switch (dir)
+    switch(dir)
     {
     case Movement::Forward:
         pos += front * vel;
@@ -47,7 +47,7 @@ void Camera::ProcessKeyboard(Movement dir, float dt)
 }
 
 void Camera::ProcessMouseMovement(
-    float off_x, float off_y, bool constrain_pitch)
+    GLfloat off_x, GLfloat off_y, GLboolean constrain_pitch)
 {
     off_x *= sensitivity;
     off_y *= sensitivity;
@@ -67,7 +67,7 @@ void Camera::ProcessMouseMovement(
     UpdateVectors();
 }
 
-void Camera::ProcessMouseScroll(float off_y)
+void Camera::ProcessMouseScroll(GLfloat off_y)
 {
     zoom -= off_y;
 

@@ -24,7 +24,7 @@
 
 #include "Object.h"
 
-class Cube : Object
+class Cube : public Object
 {
 public:
     Cube(glm::vec3 _pos, glm::quat _rot, glm::vec3 _sc)

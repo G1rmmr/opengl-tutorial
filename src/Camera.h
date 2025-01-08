@@ -15,17 +15,19 @@
 
 #pragma once
 
+#include "glad.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 class Camera
 {
 public:
-    inline static constexpr float YAW = -90.0f;
-    inline static constexpr float PITCH = 0.0f;
-    inline static constexpr float SPEED = 2.5f;
-    inline static constexpr float SENSITIVITY = 0.1f;
-    inline static constexpr float ZOOM = 45.0f;
+    inline static constexpr GLfloat YAW = -90.0f;
+    inline static constexpr GLfloat PITCH = 0.0f;
+    inline static constexpr GLfloat SPEED = 2.5f;
+    inline static constexpr GLfloat SENSITIVITY = 0.1f;
+    inline static constexpr GLfloat ZOOM = 45.0f;
 
     enum class Movement
     {
@@ -41,17 +43,17 @@ public:
     glm::vec3 right;
     glm::vec3 world_up;
 
-    float yaw;
-    float pitch;
+    GLfloat yaw;
+    GLfloat pitch;
     
-    float speed;
-    float sensitivity;
-    float zoom;
+    GLfloat speed;
+    GLfloat sensitivity;
+    GLfloat zoom;
 
     Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 3.0f), 
            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
-           float _yaw = YAW,
-           float _pitch = PITCH) 
+           GLfloat _yaw = YAW,
+           GLfloat _pitch = PITCH) 
         : front(glm::vec3(0.0f, 0.0f, -1.0f)), 
           speed(SPEED), 
           sensitivity(SENSITIVITY), 
@@ -66,20 +68,21 @@ public:
 
     glm::mat4 GetViewMatrix();
 
-    void ProcessKeyboard(Movement dir, float dt);
-    void ProcessMouseMovement(float off_x, float off_y, bool constrain_pitch = true);
-    void ProcessMouseScroll(float off_y);
+    void ProcessKeyboard(Movement dir, GLfloat dt);
+    void ProcessMouseMovement(GLfloat off_x, GLfloat off_y, GLboolean constrain_pitch = true);
+    void ProcessMouseScroll(GLfloat off_y);
 
 private:
     inline void UpdateVectors()
     {
-        glm::vec3 front;
+        glm::vec3 _front(
+            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+            sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+        );
 
-        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front.y = sin(glm::radians(pitch));
-        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        this->front = glm::normalize(_front);
 
-        front = glm::normalize(front);
         right = glm::normalize(glm::cross(front, world_up));  
         up = glm::normalize(glm::cross(right, front));
     }

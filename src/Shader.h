@@ -22,7 +22,7 @@
 
 struct Shader
 {
-    unsigned int id;
+    GLuint id;
 
     Shader(const char* vtx_path, const char* frag_path);
 

@@ -19,16 +19,18 @@
 
 #include <GLFW/glfw3.h>
 
+#include <string_view>
+#include <memory>
+
 #include "Shader.h"
 #include "Camera.h"
-
-#include <cstdint>
-#include <string_view>
+#include "Cube.h"
+#include "Manager.h"
 
 inline constexpr std::string_view APP_TITLE = "OpenGL Window";
 
-inline constexpr std::uint16_t WINDOW_WIDTH = 800;
-inline constexpr std::uint16_t WINDOW_HEIGHT = 600;
+inline constexpr GLushort WINDOW_WIDTH = 800;
+inline constexpr GLushort WINDOW_HEIGHT = 600;
 
 class App
 {
@@ -45,34 +47,22 @@ public:
     }
 
 private:
-    GLfloat vertices[48] = {
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.5f,
-        -0.5f,  0.5f,  0.5f,  0.2f, 0.8f, 0.2f
-    };
+    std::unique_ptr<Manager> manager;
+    std::unique_ptr<Shader> shader;
+    std::unique_ptr<Camera> cam;
+
     GLFWwindow* window;
-    Shader* shader;
 
-    Camera cam;
+    GLfloat last_x;
+    GLfloat last_y;
 
-    float last_x;
-    float last_y;
+    GLfloat yaw;
+    GLfloat pitch;
 
-    float yaw;
-    float pitch;
+    GLfloat dt;
+    GLfloat last_frame;
 
-    float dt;
-    float last_frame;
-
-    unsigned int vao;
-    unsigned int vbo;
-
-    bool first_mouse;
+    GLboolean first_mouse;
 
     void Render();
 

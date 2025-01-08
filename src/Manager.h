@@ -42,7 +42,6 @@ struct Scene
     }
 };
 
-
 class Manager
 {
 public:
