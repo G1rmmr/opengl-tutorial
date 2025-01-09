@@ -32,8 +32,8 @@ Shader::Shader(const std::string_view& vtx_path, const std::string_view& frag_pa
 
     try 
     {
-        v_shader.open(vtx_path);
-        f_shader.open(frag_path);
+        v_shader.open(vtx_path.data());
+        f_shader.open(frag_path.data());
         std::stringstream v_stream, f_stream;
 
         v_stream << v_shader.rdbuf();
