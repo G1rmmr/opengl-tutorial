@@ -21,8 +21,10 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include <array>
+#include <random>
 
 #include "Object.h"
+#include "Manager.h"
 
 class Cube : public Object
 {
@@ -38,14 +40,14 @@ public:
 
 private:
     std::array<GLfloat, 48> vertices = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f
+        -0.5f, -0.5f, -0.5f,  1.f, 1.f, 1.f,
+         0.5f, -0.5f, -0.5f,  1.f, 1.f, 1.f,
+         0.5f,  0.5f, -0.5f,  1.f, 1.f, 1.f,
+        -0.5f,  0.5f, -0.5f,  1.f, 1.f, 1.f,
+        -0.5f, -0.5f,  0.5f,  1.f, 1.f, 1.f,
+         0.5f, -0.5f,  0.5f,  1.f, 1.f, 1.f,
+         0.5f,  0.5f,  0.5f,  1.f, 1.f, 1.f,
+        -0.5f,  0.5f,  0.5f,  1.f, 1.f, 1.f
     };
 
     std::array<GLuint, 36> indices = {
@@ -58,4 +60,54 @@ private:
     };
 
     void Init();
+};
+
+class RandomCubeFactory
+{
+public:
+    RandomCubeFactory(GLfloat _y, GLfloat _x, GLfloat _z, size_t _count)
+    : fixed_y(_y), x_range(_x), z_range(_z), count(_count)
+    {
+
+    }
+
+    ~RandomCubeFactory() = default;
+
+    void GenerateCubes(Manager& manager)
+    {
+        for(size_t i = 0; i < count; ++i)
+        {
+            glm::vec3 pos = GenerateRandomPos();
+            glm::quat rot = GenerateRandomRot();
+            glm::vec3 sc(1.0f, 1.0f, 1.0f);
+
+            auto rand_cube = std::make_shared<Cube>(pos, rot, sc);
+            manager.AddChild(std::make_unique<Scene>(rand_cube));
+        }
+    }
+
+private:
+    GLfloat fixed_y;
+    GLfloat x_range, z_range;
+
+    size_t count;
+
+    std::mt19937 rng{std::random_device{}()};
+
+    std::uniform_real_distribution<GLfloat> dist_x{-x_range, x_range};
+    std::uniform_real_distribution<GLfloat> dist_z{-z_range, z_range};
+    std::uniform_real_distribution<GLfloat> dist_angle{-180.0f, 180.0f};
+
+    glm::vec3 GenerateRandomPos()
+    {
+        return glm::vec3(dist_x(rng), fixed_y, dist_z(rng));
+    }
+
+    glm::quat GenerateRandomRot()
+    {
+        float yaw = glm::radians(dist_angle(rng));
+        float pitch = glm::radians(dist_angle(rng));
+        float roll = glm::radians(dist_angle(rng));
+        return glm::quat(glm::vec3(pitch, yaw, roll));
+    }
 };
