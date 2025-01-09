@@ -4,31 +4,39 @@ project(opengl)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Source files
 file(GLOB SOURCES
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
-    "${CMAKE_SOURCE_DIR}/src/*.c")
+    "${CMAKE_SOURCE_DIR}/src/*.c"
+)
 
+# Suppress deprecation warnings for macOS
 add_definitions(-DGL_SILENCE_DEPRECATION)
 
+# Find OpenGL
 find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
 
+# Platform-specific settings
 if(WIN32)
-    find_package(glfw3 REQUIRED PATHS "C:/vcpkg/installed/x64-windows/share/glfw3" NO_DEFAULT_PATH)
-    set(GLFW3_LIB glfw)
+    # Use vcpkg paths for GLFW on Windows
+    set(CMAKE_PREFIX_PATH "C:/vcpkg/installed/x64-windows/share")
+    find_package(glfw3 REQUIRED CONFIG)
     set(GLFW3_INCLUDE_DIRS "C:/vcpkg/installed/x64-windows/include")
 elseif(UNIX)
+    # Use system-installed GLFW on Linux
     find_package(glfw3 REQUIRED)
-    set(GLFW3_LIB glfw)
     set(GLFW3_INCLUDE_DIRS "/usr/local/include")
 endif()
 
+# Add executable
 add_executable(opengl ${SOURCES})
 
+# Include directories
 target_include_directories(opengl PRIVATE
     ${OPENGL_INCLUDE_DIRS}
     ${GLFW3_INCLUDE_DIRS}
-    /usr/local/include/glm
+    /usr/local/include/glm  # Assuming GLM is installed here
 )
 
-target_link_libraries(opengl PRIVATE ${OPENGL_LIBRARIES} ${GLFW3_LIB})
+# Link libraries
+target_link_libraries(opengl PRIVATE ${OPENGL_LIBRARIES} glfw)
