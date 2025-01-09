@@ -90,14 +90,13 @@ GLboolean App::Init()
 
     shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
-    auto cube = std::make_shared<Cube>(
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::quat(1.f, 0.f, 0.f, 0.f),
-        glm::vec3(1.f, 1.f, 1.f)
-    );
-
     manager = std::make_unique<Manager>();
-    manager->SetRoot(cube);
+
+    auto map = std::make_shared<Map>();
+    manager->SetRoot(map);
+
+    RandomCubeFactory factory(1.f, 10.f, 10.f, 100);
+    factory.GenerateCubes(*manager);
 
     cam = std::make_unique<Camera>();
     return true;

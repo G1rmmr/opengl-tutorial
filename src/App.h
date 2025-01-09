@@ -21,13 +21,17 @@
 
 #include <string_view>
 #include <memory>
+#include <random>
 
 #include "Shader.h"
 #include "Camera.h"
-#include "Cube.h"
 #include "Manager.h"
 
+#include "Cube.h"
+#include "Map.h"
+
 inline constexpr std::string_view APP_TITLE = "OpenGL Window";
+
 inline constexpr GLushort WINDOW_WIDTH = 800;
 inline constexpr GLushort WINDOW_HEIGHT = 600;
 
