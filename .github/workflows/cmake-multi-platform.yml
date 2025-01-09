@@ -41,9 +41,9 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          # mesa-utils, libgl1-mesa-dev: 기본 OpenGL 헤더/라이브러리
-          # freeglut3-dev: GLUT(필요한 경우)
-          # libglu-dev, libglew-dev, libglfw3-dev 등 필요한 라이브러리를 추가로 설치
+          mesa-utils, libgl1-mesa-dev
+          freeglut3-dev
+          libglu-dev, libglew-dev, libglfw3-dev
           sudo apt-get install -y \
             mesa-utils \
             libgl1-mesa-dev \
