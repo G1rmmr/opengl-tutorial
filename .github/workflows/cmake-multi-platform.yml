@@ -53,10 +53,10 @@ jobs:
       - name: Install dependencies (Windows)
         if: runner.os == 'Windows'
         run: |
-          git clone https://github.com/microsoft/vcpkg.git
+          git clone https://github.com/microsoft/vcpkg.git vcpkg
           cd vcpkg
-          bootstrap-vcpkg.bat
-          .\vcpkg install glfw3:x64-windows
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe install glfw3:x64-windows
 
       - name: Set reusable strings
         id: strings
