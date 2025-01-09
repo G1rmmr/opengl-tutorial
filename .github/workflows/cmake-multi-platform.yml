@@ -15,6 +15,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
+        # 예시로 cpp_compiler를 넣었지만, 직접 지정하지 않고
+        # 기본값을 쓰는 경우라면 제거하셔도 됩니다.
         include:
           - os: windows-latest
             cpp_compiler: cl
@@ -25,42 +27,71 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Install dependencies on Windows
+      #
+      # 1) Windows 환경
+      #
       - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
+        if: matrix.os == 'windows-latest'
+        shell: cmd
         run: |
-          git clone https://github.com/microsoft/vcpkg.git vcpkg
+          echo "=== Windows: Install vcpkg ==="
+          git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
-          .\bootstrap-vcpkg.bat
-          .\vcpkg.exe install glfw3:x64-windows
+          bootstrap-vcpkg.bat
+          vcpkg.exe install glfw3:x64-windows
 
-      # Install dependencies on Linux
+      - name: Configure CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        # PowerShell이 아니라 cmd를 쓰면 ^ 로 줄바꿈합니다.
+        shell: cmd
+        run: |
+          echo "=== Windows: Configure CMake ==="
+          cmake ^
+            -B build ^
+            -G "Visual Studio 17 2022" ^
+            -A x64 ^
+            -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ^
+            -DCMAKE_CXX_COMPILER=cl ^
+            -DCMAKE_TOOLCHAIN_FILE=%GITHUB_WORKSPACE%\vcpkg\scripts\buildsystems\vcpkg.cmake ^
+            -DCMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\vcpkg\installed\x64-windows ^
+            -S .
+
+      #
+      # 2) Ubuntu 환경
+      #
       - name: Install dependencies (Linux)
-        if: runner.os == 'Linux'
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         run: |
+          echo "=== Linux: Install apt dependencies ==="
           sudo apt-get update
-          sudo apt-get install -y \
-            libglfw3-dev \
-            libglm-dev \
-            mesa-utils \
-            libglew-dev \
-            libgl1-mesa-dev \
-            freeglut3-dev
+          sudo apt-get install -y build-essential cmake ninja-build \
+              libglfw3-dev libglm-dev mesa-utils libglew-dev libgl1-mesa-dev freeglut3-dev
 
-      # Configure CMake
-      - name: Configure CMake
+          echo "=== Linux: Install vcpkg ==="
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          ./bootstrap-vcpkg.sh
+          ./vcpkg install glfw3:x64-linux
+
+      - name: Configure CMake (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         run: |
-          cmake -B build \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake \
-          -DCMAKE_PREFIX_PATH=${{ github.workspace }}/vcpkg/installed/x64-windows
+          echo "=== Linux: Configure CMake ==="
+          cmake -B build -G "Ninja" \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DCMAKE_PREFIX_PATH=${{ github.workspace }}/vcpkg/installed/x64-linux \
+            -S .
 
-      # Build the project
+      #
+      # 3) 빌드 & 테스트 (Windows/Linux 공통)
+      #
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }}
 
-      # Test the project
       - name: Test
         working-directory: build
         run: ctest --build-config ${{ matrix.build_type }}
