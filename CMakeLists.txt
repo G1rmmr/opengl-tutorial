@@ -10,18 +10,14 @@ file(GLOB SOURCES
 
 add_definitions(-DGL_SILENCE_DEPRECATION)
 
+if(WIN32)
+    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/vcpkg/installed/x64-windows")
+elseif(UNIX)
+    set(CMAKE_PREFIX_PATH "/usr/local/lib/cmake/glfw3")
+endif()
+
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
-
-if(WIN32)
-    find_package(glfw3 REQUIRED PATHS "C:/vcpkg/installed/x64-windows/share/glfw3" NO_DEFAULT_PATH)
-    set(GLFW3_LIB glfw)
-    set(GLFW3_INCLUDE_DIRS "C:/vcpkg/installed/x64-windows/include")
-elseif(UNIX)
-    find_package(glfw3 REQUIRED)
-    set(GLFW3_LIB glfw)
-    set(GLFW3_INCLUDE_DIRS "/usr/local/include")
-endif()
 
 add_executable(opengl ${SOURCES})
 
