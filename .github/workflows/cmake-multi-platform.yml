@@ -47,7 +47,8 @@ jobs:
             freeglut3-dev \
             libglu-dev \
             libglew-dev \
-            libglfw3-dev
+            libglfw3-dev \
+            libglm-dev
 
 
       - name: Set reusable strings
