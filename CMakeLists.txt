@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(opengl)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB SOURCES
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
