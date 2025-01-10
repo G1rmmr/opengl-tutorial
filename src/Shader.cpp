@@ -48,6 +48,13 @@ Shader::Shader(const std::string_view& vtx_path, const std::string_view& frag_pa
     catch (std::ifstream::failure& e)
     {
         fprintf(stderr, "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n");
+        return;
+    }
+
+    if (vtx_code.empty() || frag_code.empty())
+    {
+        fprintf(stderr, "ERROR::SHADER::EMPTY_FILE_CONTENT\n");
+        return;
     }
 
     const GLchar* v_shader_code = vtx_code.c_str();
@@ -66,8 +73,10 @@ Shader::Shader(const std::string_view& vtx_path, const std::string_view& frag_pa
     if(!success)
     {
         glGetShaderInfoLog(vertex, 512, NULL, info);
-        fprintf(stderr, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n : %s", info);
-    };
+        fprintf(stderr, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n : %s\n", info);
+        fprintf(stderr, "VERTEX SHADER CODE:\n%s\n", v_shader_code);
+        return;
+    }
 
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, &f_shader_code, NULL);
@@ -77,8 +86,10 @@ Shader::Shader(const std::string_view& vtx_path, const std::string_view& frag_pa
     if(!success)
     {
         glGetShaderInfoLog(fragment, 512, NULL, info);
-        fprintf(stderr, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n : %s", info);
-    };
+        fprintf(stderr, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n : %s\n", info);
+        fprintf(stderr, "FRAGMENT SHADER CODE:\n%s\n", f_shader_code);
+        return;
+    }
 
     id = glCreateProgram();
     glAttachShader(id, vertex);
@@ -86,10 +97,10 @@ Shader::Shader(const std::string_view& vtx_path, const std::string_view& frag_pa
     glLinkProgram(id);
     
     glGetProgramiv(id, GL_LINK_STATUS, &success);
-    if(!success)
+    if (!success)
     {
         glGetProgramInfoLog(id, 512, NULL, info);
-        fprintf(stderr, "ERROR::SHADER::PROGRAM::LINKING_FAILED\n : %s", info);
+        fprintf(stderr, "ERROR::SHADER::PROGRAM::LINKING_FAILED\n : %s\n", info);
     }
 
     glDeleteShader(vertex);

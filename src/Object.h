@@ -67,10 +67,10 @@ public:
 
     inline glm::mat4 GetMatrix() const
     {
-        return mat;
+        return this->mat;
     }
 
-    virtual void Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj) = 0;
+    virtual void Draw(const glm::mat4& view, const glm::mat4& proj) = 0;
     virtual void Update(GLfloat dt, const glm::mat4& world_form) = 0;
 
 protected:
@@ -80,6 +80,12 @@ protected:
 
     glm::vec3 pos;
     glm::vec3 sc;
+
+    GLuint shader_prog;
+
+    GLuint mat_loc;
+    GLuint view_loc;
+    GLuint proj_loc;
 
     GLuint vao;
     GLuint vbo;

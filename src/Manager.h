@@ -41,13 +41,13 @@ struct Scene
             child->Update(dt, world_form);
     }
 
-    void Draw(GLuint shader_prog, const glm::mat4& parent_form, const glm::mat4& view, const glm::mat4& proj)
+    void Draw(const glm::mat4& parent_form, const glm::mat4& view, const glm::mat4& proj)
     {
         glm::mat4 world_form = parent_form * object->GetMatrix();
-        object->Draw(shader_prog, view, proj);
+        object->Draw(view, proj);
 
         for(auto& child : children)
-            child->Draw(shader_prog, world_form, view, proj);
+            child->Draw(world_form, view, proj);
     }
 };
 
@@ -74,12 +74,12 @@ public:
         parent->children.emplace_back(child);
     }
 
-    void Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj)
+    void Draw(const glm::mat4& view, const glm::mat4& proj)
     {
         if(scene && scene->object)
         {
             glm::mat4 id = glm::mat4(1.0f);
-            scene->Draw(shader_prog, id, view, proj);
+            scene->Draw(id, view, proj);
         }
     }
 

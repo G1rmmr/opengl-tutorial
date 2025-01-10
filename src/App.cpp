@@ -19,6 +19,19 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+std::vector<GLfloat> snow_vertices = {
+        // Positions            // Normals            // Colors
+        -0.5f, -0.5f, -0.5f,    0.0f,  0.0f, -1.0f,   1.f, 1.f, 1.f,
+        0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   1.f, 1.f, 1.f,
+        0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   1.f, 1.f, 1.f,
+        -0.5f,  0.5f, -0.5f,    0.0f,  0.0f, -1.0f,   1.f, 1.f, 1.f,
+
+        -0.5f, -0.5f,  0.5f,    0.0f,  0.0f,  1.0f,   1.f, 1.f, 1.f,
+        0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   1.f, 1.f, 1.f,
+        0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   1.f, 1.f, 1.f,
+        -0.5f,  0.5f,  0.5f,    0.0f,  0.0f,  1.0f,   1.f, 1.f, 1.f
+    };
+
 App::App() 
     : window(nullptr), shader(nullptr), cam(),
     last_x(WINDOW_WIDTH * 0.5f), last_y(WINDOW_HEIGHT * 0.5f),
@@ -47,6 +60,9 @@ GLboolean App::Init()
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     window = glfwCreateWindow(
         WINDOW_WIDTH,
@@ -95,8 +111,31 @@ GLboolean App::Init()
     auto map = std::make_shared<Map>();
     manager->SetRoot(map);
 
-    RandomCubeFactory factory(1.f, 10.f, 10.f, 100);
-    factory.GenerateCubes(*manager);
+    RandomCubeFactory factory(5.f, 100.f, 100.f, 10.f, 500);
+    factory.GenerateCubes(*manager, shader->id, snow_vertices);
+
+    std::vector<GLfloat> ground_vertices = {
+        // Positions            // Normals            // Colors
+        -1.f, -0.5f, -1.f,    0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
+        1.f, -0.5f, -1.f,     0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
+        1.f,  0.5f, -1.f,     0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
+        -1.f,  0.5f, -1.f,    0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
+
+        -1.f, -0.5f,  1.f,    0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
+        1.f, -0.5f,  1.f,     0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
+        1.f,  0.5f,  1.f,     0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
+        -1.f,  0.5f,  1.f,    0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
+    };
+
+    auto ground = std::make_shared<Cube>(
+        glm::vec3(0.f, -1.f, 0.f),
+        glm::quat(0.f, 0.f, 0.f, 0.f),
+        glm::vec3(100.f, 1.f, 100.f),
+        shader->id,
+        ground_vertices
+    );
+
+    manager->AddChild(std::make_unique<Scene>(ground));
 
     cam = std::make_unique<Camera>();
     return true;
@@ -116,7 +155,7 @@ void App::Run()
 
 void App::Render()
 {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.2f, 0.5f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader->Use();
@@ -131,12 +170,11 @@ void App::Render()
     shader->SetMat("view", view);
     shader->SetMat("model", model);
 
-    shader->SetVec("light_pos", glm::vec3(1.2f, 1.0f, 2.0f));
+    shader->SetVec("light_pos", glm::vec3(0.f, 10.f, 0.f));
     shader->SetVec("view_pos", cam->pos);
-    shader->SetVec("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader->SetVec("object_color", glm::vec3(1.0f, 0.5f, 0.31f));
+    shader->SetVec("light_color", glm::vec3(1.f, 1.f, 1.f));
 
-    manager->Draw(shader->id, view, proj);
+    manager->Draw(view, proj);
     glfwSwapBuffers(window);
 }
 
