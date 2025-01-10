@@ -45,14 +45,34 @@ private:
     std::unordered_map<std::string_view, GLuint> uniforms;
     std::vector<GLfloat> vertices;
 
-    std::array<GLuint, 36> indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        0, 1, 5, 5, 4, 0,
-        2, 3, 7, 7, 6, 2,
-        0, 3, 7, 7, 4, 0,
-        1, 2, 6, 6, 5, 1
+    // 6개 면 각각 4개 정점을 이웃한 2개 삼각형으로 구성
+// face 당 2트라이앵글, 총 12트라이앵글, 36인덱스
+std::array<GLuint, 36> indices = {
+        // front face (정점: 0,1,2,3)
+        0, 1, 2,
+        2, 3, 0,
+
+        // back face (정점: 4,5,6,7)
+        4, 5, 6,
+        6, 7, 4,
+
+        // left face (정점: 8,9,10,11)
+        8, 9, 10,
+        10, 11, 8,
+
+        // right face (정점: 12,13,14,15)
+        12, 13, 14,
+        14, 15, 12,
+
+        // top face (정점: 16,17,18,19)
+        16, 17, 18,
+        18, 19, 16,
+
+        // bottom face (정점: 20,21,22,23)
+        20, 21, 22,
+        22, 23, 20
     };
+
 
     void Init(GLuint _prog, const std::vector<GLfloat>& _vertices);
 };
