@@ -15,18 +15,14 @@
 
 #include "Cube.h"
 
-void Cube::Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj)
+void Cube::Draw(const glm::mat4& view, const glm::mat4& proj)
 {
     this->UpdateMatrix();
-
-    GLuint mat_loc = glGetUniformLocation(shader_prog, "model");
-    GLuint view_loc = glGetUniformLocation(shader_prog, "view");
-    GLuint proj_loc = glGetUniformLocation(shader_prog, "projection");
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, &this->mat[0][0]);
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, &view[0][0]);
     glUniformMatrix4fv(proj_loc, 1, GL_FALSE, &proj[0][0]);
-
+    
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
@@ -34,28 +30,41 @@ void Cube::Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj
 
 void Cube::Update(GLfloat dt, const glm::mat4& world_form)
 {
-    Rotate(2.f, {0.f, 1.f, 0.f});
+    Rotate(10.0f * dt, {0.f, 1.f, 0.f});
+
+    glm::vec3 translation(-0.5f * dt, -2.f * dt, -1.f * dt);
+    this->mat = glm::translate(this->mat, translation);
 }
 
-void Cube::Init()
+void Cube::Init(GLuint _prog, const std::vector<GLfloat>& _vertices)
 {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
+    shader_prog = _prog;
+    vertices = _vertices;
+    
+    mat_loc = glGetUniformLocation(shader_prog, "model");
+    view_loc = glGetUniformLocation(shader_prog, "view");
+    proj_loc = glGetUniformLocation(shader_prog, "proj");
 
+    glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_DYNAMIC_DRAW);
 
+    glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
+    // layouts
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }

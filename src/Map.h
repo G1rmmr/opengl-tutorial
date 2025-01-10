@@ -15,12 +15,16 @@
 
 #pragma once
 
+#include "glad.h"
+
 #include "Object.h"
+
+#include <vector>
 
 class Map : public Object
 {
 public:
-    void Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj) override
+    void Draw(const glm::mat4& view, const glm::mat4& proj) override
     {
 
     }

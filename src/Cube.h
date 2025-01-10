@@ -20,8 +20,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include <vector>
 #include <array>
 #include <random>
+#include <unordered_map>
+#include <string>
 
 #include "Object.h"
 #include "Manager.h"
@@ -29,66 +32,85 @@
 class Cube : public Object
 {
 public:
-    Cube(glm::vec3 _pos, glm::quat _rot, glm::vec3 _sc)
+    Cube(glm::vec3 _pos, glm::quat _rot, glm::vec3 _sc, GLuint _prog, const std::vector<GLfloat>& _vertices)
     : Object(_pos, _rot, _sc)
     {
-        Init();
+        Init(_prog, _vertices);
     }
 
-    void Draw(GLuint shader_prog, const glm::mat4& view, const glm::mat4& proj) override;
+    void Draw(const glm::mat4& view, const glm::mat4& proj) override;
     void Update(GLfloat dt, const glm::mat4& world_form) override;
 
 private:
-    std::array<GLfloat, 48> vertices = {
-        -0.5f, -0.5f, -0.5f,  1.f, 1.f, 1.f,
-         0.5f, -0.5f, -0.5f,  1.f, 1.f, 1.f,
-         0.5f,  0.5f, -0.5f,  1.f, 1.f, 1.f,
-        -0.5f,  0.5f, -0.5f,  1.f, 1.f, 1.f,
-        -0.5f, -0.5f,  0.5f,  1.f, 1.f, 1.f,
-         0.5f, -0.5f,  0.5f,  1.f, 1.f, 1.f,
-         0.5f,  0.5f,  0.5f,  1.f, 1.f, 1.f,
-        -0.5f,  0.5f,  0.5f,  1.f, 1.f, 1.f
+    std::unordered_map<std::string_view, GLuint> uniforms;
+    std::vector<GLfloat> vertices;
+
+    // 6개 면 각각 4개 정점을 이웃한 2개 삼각형으로 구성
+// face 당 2트라이앵글, 총 12트라이앵글, 36인덱스
+std::array<GLuint, 36> indices = {
+        // front face (정점: 0,1,2,3)
+        0, 1, 2,
+        2, 3, 0,
+
+        // back face (정점: 4,5,6,7)
+        4, 5, 6,
+        6, 7, 4,
+
+        // left face (정점: 8,9,10,11)
+        8, 9, 10,
+        10, 11, 8,
+
+        // right face (정점: 12,13,14,15)
+        12, 13, 14,
+        14, 15, 12,
+
+        // top face (정점: 16,17,18,19)
+        16, 17, 18,
+        18, 19, 16,
+
+        // bottom face (정점: 20,21,22,23)
+        20, 21, 22,
+        22, 23, 20
     };
 
-    std::array<GLuint, 36> indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        4, 5, 1, 1, 0, 4,
-        6, 7, 3, 3, 2, 6,
-        4, 7, 3, 3, 0, 4,
-        5, 6, 2, 2, 1, 5
-    };
 
-    void Init();
+    void Init(GLuint _prog, const std::vector<GLfloat>& _vertices);
 };
 
 class RandomCubeFactory
 {
 public:
-    RandomCubeFactory(GLfloat _y, GLfloat _x, GLfloat _z, size_t _count)
-    : fixed_y(_y), x_range(_x), z_range(_z), count(_count)
+    RandomCubeFactory(GLfloat _y, GLfloat _x, GLfloat _z, GLfloat _min, size_t _count)
+    : fixed_y(_y), x_range(_x), z_range(_z), min_distance(_min), count(_count)
     {
 
     }
 
     ~RandomCubeFactory() = default;
 
-    void GenerateCubes(Manager& manager)
+    void GenerateCubes(Manager& manager, GLuint prog, const std::vector<GLfloat>& _vertices)
     {
+        std::vector<glm::vec3> generated_pos;
+        generated_pos.reserve(count);
+
         for(size_t i = 0; i < count; ++i)
         {
-            glm::vec3 pos = GenerateRandomPos();
+            glm::vec3 pos = GenerateRandomPos(generated_pos);
             glm::quat rot = GenerateRandomRot();
-            glm::vec3 sc(1.0f, 1.0f, 1.0f);
+            glm::vec3 sc(0.3f, 0.3f, 0.3f);
 
-            auto rand_cube = std::make_shared<Cube>(pos, rot, sc);
+            auto rand_cube = std::make_shared<Cube>(pos, rot, sc, prog, _vertices);
             manager.AddChild(std::make_unique<Scene>(rand_cube));
+
+            generated_pos.emplace_back(pos);
         }
     }
 
 private:
     GLfloat fixed_y;
-    GLfloat x_range, z_range;
+    GLfloat x_range;
+    GLfloat z_range;
+    GLfloat min_distance;
 
     size_t count;
 
@@ -98,16 +120,35 @@ private:
     std::uniform_real_distribution<GLfloat> dist_z{-z_range, z_range};
     std::uniform_real_distribution<GLfloat> dist_angle{-180.0f, 180.0f};
 
-    glm::vec3 GenerateRandomPos()
+    glm::vec3 GenerateRandomPos(const std::vector<glm::vec3>& _pos)
     {
+        const GLint max_attempts = 1000;
+
+        for(GLint i = 0; i < max_attempts; ++i)
+        {
+            glm::vec3 candidate(dist_x(rng), fixed_y, dist_z(rng));
+
+            GLboolean is_valid = true;
+            for(const auto& p : _pos)
+            {
+                if(glm::distance(candidate, p) < min_distance)
+                {
+                    is_valid = false;
+                    break;
+                }
+            }
+
+            if(is_valid)
+                return candidate;
+        }
         return glm::vec3(dist_x(rng), fixed_y, dist_z(rng));
     }
 
     glm::quat GenerateRandomRot()
     {
-        float yaw = glm::radians(dist_angle(rng));
-        float pitch = glm::radians(dist_angle(rng));
-        float roll = glm::radians(dist_angle(rng));
+        GLfloat yaw = glm::radians(dist_angle(rng));
+        GLfloat pitch = glm::radians(dist_angle(rng));
+        GLfloat roll = glm::radians(dist_angle(rng));
         return glm::quat(glm::vec3(pitch, yaw, roll));
     }
 };
