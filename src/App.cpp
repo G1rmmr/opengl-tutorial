@@ -187,7 +187,54 @@ GLboolean App::Init()
         ground_vertices
     );
 
+    std::vector<GLfloat> moon_vertices = {
+        // Front face (z = -0.5, normal = ( 0,  0, -1 ))
+    -0.5f, -0.5f, -0.5f,   0.f,  0.f, -1.f,   1.f, 1.f, 0.8f,
+     0.5f, -0.5f, -0.5f,   0.f,  0.f, -1.f,   1.f, 1.f, 0.8f,
+     0.5f,  0.5f, -0.5f,   0.f,  0.f, -1.f,   1.f, 1.f, 0.8f,
+    -0.5f,  0.5f, -0.5f,   0.f,  0.f, -1.f,   1.f, 1.f, 0.8f,
+
+    // Back face (z = 0.5, normal = ( 0,  0,  1 ))
+    -0.5f, -0.5f,  0.5f,   0.f,  0.f,  1.f,   1.f, 1.f, 0.8f,
+     0.5f, -0.5f,  0.5f,   0.f,  0.f,  1.f,   1.f, 1.f, 0.8f,
+     0.5f,  0.5f,  0.5f,   0.f,  0.f,  1.f,   1.f, 1.f, 0.8f,
+    -0.5f,  0.5f,  0.5f,   0.f,  0.f,  1.f,   1.f, 1.f, 0.8f,
+
+    // Left face (x = -0.5, normal = (-1, 0, 0))
+    -0.5f, -0.5f, -0.5f,  -1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+    -0.5f, -0.5f,  0.5f,  -1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+    -0.5f,  0.5f,  0.5f,  -1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+    -0.5f,  0.5f, -0.5f,  -1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+
+    // Right face (x = 0.5, normal = ( 1, 0, 0))
+     0.5f, -0.5f, -0.5f,   1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f, -0.5f,  0.5f,   1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f,  0.5f,  0.5f,   1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f,  0.5f, -0.5f,   1.f,  0.f,  0.f,   1.f, 1.f, 0.8f,
+
+    // Top face (y = 0.5, normal = ( 0, 1, 0))
+    -0.5f,  0.5f, -0.5f,   0.f,  1.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f,  0.5f, -0.5f,   0.f,  1.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f,  0.5f,  0.5f,   0.f,  1.f,  0.f,   1.f, 1.f, 0.8f,
+    -0.5f,  0.5f,  0.5f,   0.f,  1.f,  0.f,   1.f, 1.f, 0.8f,
+
+    // Bottom face (y = -0.5, normal = (0, -1, 0))
+    -0.5f, -0.5f, -0.5f,   0.f, -1.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f, -0.5f, -0.5f,   0.f, -1.f,  0.f,   1.f, 1.f, 0.8f,
+     0.5f, -0.5f,  0.5f,   0.f, -1.f,  0.f,   1.f, 1.f, 0.8f,
+    -0.5f, -0.5f,  0.5f,   0.f, -1.f,  0.f,   1.f, 1.f, 0.8f
+    };
+
+    auto moon = std::make_shared<Cube>(
+        glm::vec3(0.f, 3.f, 3.f),
+        glm::quat(0.f, 0.f, 0.f, 0.f),
+        glm::vec3(10.f, 10.f, 10.f),
+        shader->id,
+        moon_vertices
+    );
+
     manager->AddChild(std::make_unique<Scene>(ground));
+    manager->AddChild(std::make_unique<Scene>(moon));
 
     cam = std::make_unique<Camera>();
     return true;
