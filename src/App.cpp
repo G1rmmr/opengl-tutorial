@@ -131,13 +131,12 @@ GLboolean App::Init()
     glEnable(GL_DEPTH_TEST);
 
     shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
-
     manager = std::make_unique<Manager>();
 
     auto map = std::make_shared<Map>();
     manager->SetRoot(map);
 
-    RandomCubeFactory factory(5.f, 100.f, 100.f, 10.f, 500);
+    RandomCubeFactory factory(100.f, 5.f, 100.f, 10.f, 500);
     factory.GenerateCubes(*manager, shader->id, snow_vertices);
 
     std::vector<GLfloat> ground_vertices = {
@@ -181,7 +180,7 @@ GLboolean App::Init()
 
     auto ground = std::make_shared<Cube>(
         glm::vec3(0.f, -1.f, 0.f),
-        glm::quat(0.f, 0.f, 0.f, 0.f),
+        glm::quat(1.f, 0.f, 0.f, 0.f),
         glm::vec3(100.f, 1.f, 100.f),
         shader->id,
         ground_vertices
@@ -226,9 +225,9 @@ GLboolean App::Init()
     };
 
     auto moon = std::make_shared<Cube>(
-        glm::vec3(0.f, 3.f, 3.f),
+        glm::vec3(-1.f, 3.f, -30.f),
         glm::quat(0.f, 0.f, 0.f, 0.f),
-        glm::vec3(10.f, 10.f, 10.f),
+        glm::vec3(2.f, 2.f, 2.f),
         shader->id,
         moon_vertices
     );

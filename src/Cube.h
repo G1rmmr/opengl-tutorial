@@ -80,8 +80,8 @@ std::array<GLuint, 36> indices = {
 class RandomCubeFactory
 {
 public:
-    RandomCubeFactory(GLfloat _y, GLfloat _x, GLfloat _z, GLfloat _min, size_t _count)
-    : fixed_y(_y), x_range(_x), z_range(_z), min_distance(_min), count(_count)
+    RandomCubeFactory(GLfloat _x, GLfloat _y, GLfloat _z, GLfloat _min, size_t _count)
+    : x_range(_x), y_range(_y), z_range(_z), min_distance(_min), count(_count)
     {
 
     }
@@ -97,7 +97,7 @@ public:
         {
             glm::vec3 pos = GenerateRandomPos(generated_pos);
             glm::quat rot = GenerateRandomRot();
-            glm::vec3 sc(0.3f, 0.3f, 0.3f);
+            glm::vec3 sc(0.5f, 0.5f, 0.5f);
 
             auto rand_cube = std::make_shared<Cube>(pos, rot, sc, prog, _vertices);
             manager.AddChild(std::make_unique<Scene>(rand_cube));
@@ -107,8 +107,8 @@ public:
     }
 
 private:
-    GLfloat fixed_y;
     GLfloat x_range;
+    GLfloat y_range;
     GLfloat z_range;
     GLfloat min_distance;
 
@@ -117,6 +117,7 @@ private:
     std::mt19937 rng{std::random_device{}()};
 
     std::uniform_real_distribution<GLfloat> dist_x{-x_range, x_range};
+    std::uniform_real_distribution<GLfloat> dist_y{1.f, y_range};
     std::uniform_real_distribution<GLfloat> dist_z{-z_range, z_range};
     std::uniform_real_distribution<GLfloat> dist_angle{-180.0f, 180.0f};
 
@@ -126,7 +127,7 @@ private:
 
         for(GLint i = 0; i < max_attempts; ++i)
         {
-            glm::vec3 candidate(dist_x(rng), fixed_y, dist_z(rng));
+            glm::vec3 candidate(dist_x(rng), dist_y(rng), dist_z(rng));
 
             GLboolean is_valid = true;
             for(const auto& p : _pos)
@@ -141,7 +142,7 @@ private:
             if(is_valid)
                 return candidate;
         }
-        return glm::vec3(dist_x(rng), fixed_y, dist_z(rng));
+        return glm::vec3(dist_x(rng), dist_y(rng), dist_z(rng));
     }
 
     glm::quat GenerateRandomRot()
