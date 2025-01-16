@@ -19,6 +19,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+#include <random>
+
 // 각 정점 당: (position.x, position.y, position.z, normal.x, normal.y, normal.z, color.r, color.g, color.b)
 std::vector<GLfloat> snow_vertices = {
     // Front face (z = -0.5, normal = ( 0,  0, -1 ))
@@ -274,7 +276,7 @@ void App::Render()
 
     lighting_shader->SetVec("light_pos", glm::vec3(0.f, 0.f, 0.f));
     lighting_shader->SetVec("view_pos", cam->pos);
-    lighting_shader->SetVec("light_color", glm::vec3(1.f, 1.f, 0.8f));
+    lighting_shader->SetVec("light_color", _color);
 
     manager->Draw(view, proj);
     
@@ -307,6 +309,20 @@ void App::ProcessInput(GLFWwindow* window)
         cam->ProcessKeyboard(Camera::Movement::Left, abs_dt);
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cam->ProcessKeyboard(Camera::Movement::Right, abs_dt);
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        if(!change_light)
+        {
+            GenerateRandomColor();
+            change_light = true;
+        }
+        else
+        {
+            _color = glm::vec3(1.f, 1.f, 0.8f);
+            change_light = false;
+        }
+    }
+        
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }

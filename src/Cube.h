@@ -155,9 +155,9 @@ private:
 
     glm::vec3 GenerateRandomSc()
     {
-        std::uniform_real_distribution<GLfloat> _x{0.2f, 1.2f};
-        std::uniform_real_distribution<GLfloat> _y{0.2f, 1.2f};
-        std::uniform_real_distribution<GLfloat> _z{0.2f, 1.2f};
+        std::uniform_real_distribution<GLfloat> _x{0.1f, 1.5f};
+        std::uniform_real_distribution<GLfloat> _y{0.1f, 1.5f};
+        std::uniform_real_distribution<GLfloat> _z{0.1f, 1.5f};
 
         return glm::vec3(_x(rng), _y(rng), _z(rng));
     }

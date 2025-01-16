@@ -52,6 +52,8 @@ public:
 private:
     const GLfloat target_frame_time = 0.0333f;
 
+    glm::vec3 _color = glm::vec3(1.f, 1.f, 0.8f);
+
     std::unique_ptr<Manager> manager;
     std::unique_ptr<Shader> lighting_shader;
     std::unique_ptr<Shader> post_shader;
@@ -76,6 +78,7 @@ private:
     GLuint q_vbo;
 
     GLboolean first_mouse;
+    GLboolean change_light = false;
 
     void Render();
 
@@ -91,5 +94,16 @@ private:
     inline static void FramebufSizeCallback(GLFWwindow* window, GLint w, GLint h)
     {
         glViewport(0, 0, w, h);
+    }
+
+    inline void GenerateRandomColor()
+    {
+        std::mt19937 rng{std::random_device{}()};
+
+        std::uniform_real_distribution<GLfloat> _x{0.f, 1.f};
+        std::uniform_real_distribution<GLfloat> _y{0.f, 1.f};
+        std::uniform_real_distribution<GLfloat> _z{0.f, 1.f};
+
+        _color = glm::vec3(_x(rng), _y(rng), _z(rng));
     }
 };
