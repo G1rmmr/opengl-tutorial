@@ -17,35 +17,103 @@
 
 #include <SFML/Audio.hpp>
 
+#include <thread>
+#include <chrono>
+#include <iostream>
+
 int main()
 {
     sf::SoundBuffer buffer;
 
     if(!buffer.loadFromFile("../assets/white-ashes.wav"))
     {
-        fprintf(stderr, "Can not open WAV\n");
+        std::cout << "Can not open WAV\n" << std::endl;
         return -1;
     }
 
     sf::Sound sound(buffer);
     sound.play();
 
+    auto print = []() -> void {
+        for(int i = 0; i < 50; ++i)
+            std::cout << std::endl;
+        
+        std::cout << "\tOne" << std::flush;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << " late" << std::flush;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << " night," << std::endl;
+
+        for(int i = 0; i < 5; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << std::endl;
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::cout << "\tI"<< std::flush;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << " realized" << std::flush;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << " that" << std::flush;
+
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+
+        for(int i = 0; i < 3; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << " . " << std::flush;
+        }
+
+
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+
+        for(int i = 0; i < 5; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << std::endl;
+        }
+
+        std::cout << "\t" << std::flush;
+
+        for(int i = 0; i < 3; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << " . " << std::flush;
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::cout << "I" << std::flush;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << " am" << std::flush;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << " alone.\n" << std::flush;
+        
+        for(int i = 0; i < 5; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << std::endl;
+        }
+
+        std::cout << "\tSad.\n" << std::flush;
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        for(int i = 0; i < 100; ++i)
+            std::cout << std::endl;
+    };
+
     App app;
     if(!app.Init())
         return -1;
 
-    for(int i = 0; i < 50; ++i)
-        printf("\n");
-    
-    printf("\tWhite ashes\n");
-
-    for(int i = 0; i < 30; ++i)
-        printf("\n");
+    std::thread print_th(print);
 
     while(app.IsRunning())
         app.Run();
     
-    
+    if (print_th.joinable())
+        print_th.join();
+
     for(int i = 0; i < 50; ++i)
         printf("\n");
 
