@@ -117,7 +117,7 @@ private:
     std::mt19937 rng{std::random_device{}()};
 
     std::uniform_real_distribution<GLfloat> dist_x{-x_range, x_range};
-    std::uniform_real_distribution<GLfloat> dist_y{1.f, y_range};
+    std::uniform_real_distribution<GLfloat> dist_y{3.f, y_range};
     std::uniform_real_distribution<GLfloat> dist_z{-z_range, z_range};
     std::uniform_real_distribution<GLfloat> dist_angle{-180.0f, 180.0f};
 
