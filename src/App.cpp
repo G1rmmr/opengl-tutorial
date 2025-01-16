@@ -141,28 +141,28 @@ GLboolean App::Init()
 
     std::vector<GLfloat> ground_vertices = {
         // ----- Front face (z = -1, normal = ( 0,  0, -1 )) -----
-        -1.f, -0.5f, -1.f,   0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
-        1.f, -0.5f, -1.f,   0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
-        1.f,  0.5f, -1.f,   0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
-        -1.f,  0.5f, -1.f,   0.f,  0.f, -1.f,   0.7f, 0.7f, 0.7f,
+        -1.f, -0.5f, -1.f,   0.f,  0.f, -1.f,   0.3f, 0.3f, 0.3f,
+        1.f, -0.5f, -1.f,   0.f,  0.f, -1.f,   0.3f, 0.3f, 0.3f,
+        1.f,  0.5f, -1.f,   0.f,  0.f, -1.f,   0.3f, 0.3f, 0.3f,
+        -1.f,  0.5f, -1.f,   0.f,  0.f, -1.f,   0.3f, 0.3f, 0.3f,
 
         // ----- Back face (z =  1, normal = ( 0,  0,  1 )) -----
-        -1.f, -0.5f,  1.f,   0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
-        1.f, -0.5f,  1.f,   0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
-        1.f,  0.5f,  1.f,   0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
-        -1.f,  0.5f,  1.f,   0.f,  0.f,  1.f,   0.7f, 0.7f, 0.7f,
+        -1.f, -0.5f,  1.f,   0.f,  0.f,  1.f,   0.3f, 0.3f, 0.3f,
+        1.f, -0.5f,  1.f,   0.f,  0.f,  1.f,   0.3f, 0.3f, 0.3f,
+        1.f,  0.5f,  1.f,   0.f,  0.f,  1.f,   0.3f, 0.3f, 0.3f,
+        -1.f,  0.5f,  1.f,   0.f,  0.f,  1.f,   0.3f, 0.3f, 0.3f,
 
         // ----- Left face (x = -1, normal = (-1, 0, 0)) -----
-        -1.f, -0.5f, -1.f,  -1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
-        -1.f, -0.5f,  1.f,  -1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
-        -1.f,  0.5f,  1.f,  -1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
-        -1.f,  0.5f, -1.f,  -1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
+        -1.f, -0.5f, -1.f,  -1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
+        -1.f, -0.5f,  1.f,  -1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
+        -1.f,  0.5f,  1.f,  -1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
+        -1.f,  0.5f, -1.f,  -1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
 
         // ----- Right face (x =  1, normal = ( 1, 0, 0)) -----
-        1.f, -0.5f, -1.f,   1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
-        1.f, -0.5f,  1.f,   1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
-        1.f,  0.5f,  1.f,   1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
-        1.f,  0.5f, -1.f,   1.f,  0.f,  0.f,   0.7f, 0.7f, 0.7f,
+        1.f, -0.5f, -1.f,   1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
+        1.f, -0.5f,  1.f,   1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
+        1.f,  0.5f,  1.f,   1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
+        1.f,  0.5f, -1.f,   1.f,  0.f,  0.f,   0.3f, 0.3f, 0.3f,
 
         // ----- Top face (y =  0.5, normal = (0, 1, 0)) -----
         -1.f,  0.5f, -1.f,   0.f,  1.f,  0.f,   0.3f, 0.3f, 0.3f,
@@ -171,22 +171,11 @@ GLboolean App::Init()
         -1.f,  0.5f,  1.f,   0.f,  1.f,  0.f,   0.3f, 0.3f, 0.3f,
 
         // ----- Bottom face (y = -0.5, normal = (0, -1, 0)) -----
-        -1.f, -0.5f, -1.f,   0.f, -1.f,  0.f,   0.7f, 0.7f, 0.7f,
-        1.f, -0.5f, -1.f,   0.f, -1.f,  0.f,   0.7f, 0.7f, 0.7f,
-        1.f, -0.5f,  1.f,   0.f, -1.f,  0.f,   0.7f, 0.7f, 0.7f,
-        -1.f, -0.5f,  1.f,   0.f, -1.f,  0.f,   0.7f, 0.7f, 0.7f
+        -1.f, -0.5f, -1.f,   0.f, -1.f,  0.f,   0.3f, 0.3f, 0.3f,
+        1.f, -0.5f, -1.f,   0.f, -1.f,  0.f,   0.3f, 0.3f, 0.3f,
+        1.f, -0.5f,  1.f,   0.f, -1.f,  0.f,   0.3f, 0.3f, 0.3f,
+        -1.f, -0.5f,  1.f,   0.f, -1.f,  0.f,   0.3f, 0.3f, 0.3f,
     };
-
-
-    auto ground = std::make_shared<Cube>(
-        glm::vec3(0.f, -1.f, 0.f),
-        glm::quat(0.f, 0.f, 0.f, 0.f),
-        glm::vec3(100.f, 1.f, 100.f),
-        shader->id,
-        ground_vertices
-    );
-
-    manager->AddChild(std::make_unique<Scene>(ground));
 
     cam = std::make_unique<Camera>();
     return true;
@@ -206,7 +195,7 @@ void App::Run()
 
 void App::Render()
 {
-    glClearColor(0.0f, 0.0f, 0.2f, 0.5f);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader->Use();
@@ -221,7 +210,7 @@ void App::Render()
     shader->SetMat("view", view);
     shader->SetMat("model", model);
 
-    shader->SetVec("light_pos", glm::vec3(-5.f, 10.f, -30.f));
+    shader->SetVec("light_pos", glm::vec3(0.f, 0.f, 0.f));
     shader->SetVec("view_pos", cam->pos);
     shader->SetVec("light_color", glm::vec3(1.f, 1.f, 0.8f));
 

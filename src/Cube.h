@@ -97,7 +97,7 @@ public:
         {
             glm::vec3 pos = GenerateRandomPos(generated_pos);
             glm::quat rot = GenerateRandomRot();
-            glm::vec3 sc(0.5f, 0.5f, 0.5f);
+            glm::vec3 sc = GenerateRandomSc();
 
             auto rand_cube = std::make_shared<Cube>(pos, rot, sc, prog, _vertices);
             manager.AddChild(std::make_unique<Scene>(rand_cube));
@@ -151,5 +151,14 @@ private:
         GLfloat pitch = glm::radians(dist_angle(rng));
         GLfloat roll = glm::radians(dist_angle(rng));
         return glm::quat(glm::vec3(pitch, yaw, roll));
+    }
+
+    glm::vec3 GenerateRandomSc()
+    {
+        std::uniform_real_distribution<GLfloat> _x{0.2f, 1.2f};
+        std::uniform_real_distribution<GLfloat> _y{0.2f, 1.2f};
+        std::uniform_real_distribution<GLfloat> _z{0.2f, 1.2f};
+
+        return glm::vec3(_x(rng), _y(rng), _z(rng));
     }
 };

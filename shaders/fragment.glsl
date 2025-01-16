@@ -33,6 +33,11 @@ void main() {
   float _diff = max(0.0, dot(in_norm, light_dir));
   vec3 diff = _diff * light_color;
 
-  vec3 result = (amb + diff) * in_color;
+  vec3 view_dir = normalize(view_pos - in_pos);
+  vec3 reflect_dir = reflect(-light_dir, in_norm);
+  float _spec = pow(max(dot(view_dir, reflect_dir), 0.0), 0.5);
+  vec3 spec = 5.0 * _spec * light_color;
+
+  vec3 result = (amb + diff + spec + in_norm) * in_color;
   frag_color = vec4(result, 1.0);
 }
