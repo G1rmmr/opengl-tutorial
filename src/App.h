@@ -30,7 +30,7 @@
 #include "Cube.h"
 #include "Map.h"
 
-inline constexpr std::string_view APP_TITLE = "OpenGL Window";
+inline constexpr std::string_view APP_TITLE = "White ashes";
 
 inline constexpr GLushort WINDOW_WIDTH = 800;
 inline constexpr GLushort WINDOW_HEIGHT = 600;
@@ -52,12 +52,23 @@ public:
 private:
     const GLfloat target_frame_time = 0.0333f;
 
-    glm::vec3 _color = glm::vec3(1.f, 1.f, 0.8f);
+    glm::vec3 _color;
+
+    GLuint bright_fbo;
+    GLuint bright_tex;
+
+    GLuint pingpong_fbo[2];
+    GLuint pingpong_tex[2];
 
     std::unique_ptr<Manager> manager;
+    std::unique_ptr<Camera> cam;
+
     std::unique_ptr<Shader> lighting_shader;
     std::unique_ptr<Shader> post_shader;
-    std::unique_ptr<Camera> cam;
+    std::unique_ptr<Shader> bright_pass_shader;
+    std::unique_ptr<Shader> blur_horizontal_shader;
+    std::unique_ptr<Shader> blur_vertical_shader;
+    std::unique_ptr<Shader> composite_shader;
 
     GLFWwindow* window;
 
@@ -76,9 +87,11 @@ private:
 
     GLuint q_vao;
     GLuint q_vbo;
+    GLuint post_enable;
 
     GLboolean first_mouse;
-    GLboolean change_light = false;
+    GLboolean change_light;
+    GLboolean render;
 
     void Render();
 
@@ -105,5 +118,12 @@ private:
         std::uniform_real_distribution<GLfloat> _z{0.f, 1.f};
 
         _color = glm::vec3(_x(rng), _y(rng), _z(rng));
+    }
+
+    inline GLfloat GenerateRandom()
+    {
+        std::mt19937 rng{std::random_device{}()};
+        std::uniform_real_distribution<GLfloat> result{0.f, 1.f};
+        return result(rng);
     }
 };

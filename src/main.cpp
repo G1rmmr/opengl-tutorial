@@ -15,15 +15,53 @@
 
 #include "App.h"
 
+#include <SFML/Audio.hpp>
+
 int main()
 {
+    sf::SoundBuffer buffer;
+
+    if(!buffer.loadFromFile("../assets/white-ashes.wav"))
+    {
+        fprintf(stderr, "Can not open WAV\n");
+        return -1;
+    }
+
+    sf::Sound sound(buffer);
+    sound.play();
+
     App app;
-    
     if(!app.Init())
         return -1;
+
+    for(int i = 0; i < 50; ++i)
+        printf("\n");
+    
+    printf("\tWhite ashes\n");
+
+    for(int i = 0; i < 30; ++i)
+        printf("\n");
 
     while(app.IsRunning())
         app.Run();
     
+    
+    for(int i = 0; i < 50; ++i)
+        printf("\n");
+
+    printf("\n<Music>\n");
+    printf("\n\t\"White ashes\"");
+    printf("\n\tFROM the EP album <Noises.> (_Grammer, 2025)\n");
+    printf("\tCompose - Jiwon Nam\n");
+    printf("\tArrange - Jiwon Nam\n");
+
+    printf("\n<Film>\n");
+    printf("\n\tDirecting - Jiwon Nam\n");
+    printf("\tProgramming - Jiwon Nam\n");
+
+    printf("\nThank you.\n");
+
+    for(int i = 0; i < 20; ++i)
+        printf("\n");
     return 0;
 }

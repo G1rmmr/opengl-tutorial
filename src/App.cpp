@@ -100,7 +100,7 @@ GLboolean App::Init()
         WINDOW_WIDTH,
         WINDOW_HEIGHT,
         APP_TITLE.data(),
-        nullptr,
+        monitor,
         nullptr);
 
     if(!window)
@@ -196,7 +196,7 @@ GLboolean App::Init()
     auto map = std::make_shared<Map>();
     manager->SetRoot(map);
 
-    RandomCubeFactory factory(100.f, 10.f, 100.f, 10.f, 1000);
+    RandomCubeFactory factory(10.f, 10.f, 10.f, 10.f, 1000);
     factory.GenerateCubes(*manager, lighting_shader->id, snow_vertices);
 
     std::vector<GLfloat> ground_vertices = {
@@ -240,6 +240,12 @@ GLboolean App::Init()
     cam = std::make_unique<Camera>();
     last_frame = static_cast<GLfloat>(glfwGetTime());
 
+    _color = glm::vec3(1.f, 1.f, 1.f);
+
+    change_light = false;
+    render = false;
+    post_enable = 0;
+
     return true;
 }
 
@@ -250,8 +256,17 @@ void App::Run()
 
     ProcessInput(window);
     manager->Update(dt);
-    Render();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if(render)
+        Render();
+    else
+        glClearColor(0.f, 0.f, 0.f, 0.f);
+    
     glfwPollEvents();
+    glfwSwapBuffers(window);
 
     last_frame = curr_frame + target_frame_time;
 }
@@ -259,7 +274,8 @@ void App::Run()
 void App::Render()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glClearColor(0.f, 0.f, 0.f, 1.f);
+
+    glClearColor(1.f - _color.x, 1.f - _color.y, 1.f - _color.z, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     lighting_shader->Use();
@@ -278,24 +294,24 @@ void App::Render()
     lighting_shader->SetVec("view_pos", cam->pos);
     lighting_shader->SetVec("light_color", _color);
 
+    lighting_shader->SetTex("enabled", post_enable);
+
     manager->Draw(view, proj);
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     post_shader->Use();
+
     glBindVertexArray(q_vao);
     glDisable(GL_DEPTH_TEST);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, color_text);
-
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glEnable(GL_DEPTH_TEST);
     glBindVertexArray(0);
-
-    glfwSwapBuffers(window);
 }
 
 void App::ProcessInput(GLFWwindow* window)
@@ -309,20 +325,27 @@ void App::ProcessInput(GLFWwindow* window)
         cam->ProcessKeyboard(Camera::Movement::Left, abs_dt);
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cam->ProcessKeyboard(Camera::Movement::Right, abs_dt);
-    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+        GenerateRandomColor();
+
+    static bool space_pressed = false;
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !space_pressed)
     {
-        if(!change_light)
-        {
-            GenerateRandomColor();
-            change_light = true;
-        }
-        else
-        {
-            _color = glm::vec3(1.f, 1.f, 0.8f);
-            change_light = false;
-        }
+        render = !render;
+        space_pressed = true;
     }
-        
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+        space_pressed = false;
+
+    static bool p_key_pressed = false;
+    if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !p_key_pressed)
+    {
+        post_enable = post_enable > 0 ? 0 : 1;
+        p_key_pressed = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
+        p_key_pressed = false;
+
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }

@@ -28,7 +28,6 @@ float rand(vec2 co) {
 
 void main() {
   vec3 color = texture(screen_tex, in_tex_coords).rgb;
-
   float line_thick = 1.0;
   float intensity = 0.2;
 
@@ -40,6 +39,5 @@ void main() {
   float noise_strength = 0.05;
   float noise = rand(in_tex_coords) * noise_strength;
   color += vec3(noise);
-
   frag_color = vec4(color, 1.0);
 }

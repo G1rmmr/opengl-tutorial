@@ -25,6 +25,8 @@ uniform vec3 light_pos;
 uniform vec3 light_color;
 uniform vec3 view_pos;
 
+uniform bool enabled;
+
 void main() {
   vec3 amb = 0.1 * light_color;
 
@@ -37,6 +39,11 @@ void main() {
   float _spec = pow(max(dot(view_dir, reflect_dir), 0.0), 0.5);
   vec3 spec = 5.0 * _spec * light_color;
 
-  vec3 result = (amb + diff + spec + in_norm) * in_color;
+  vec3 extra = vec3(0.0, 0.0, 0.0);
+
+  if (enabled)
+    extra = in_norm;
+
+  vec3 result = (amb + diff + spec + extra) * in_color;
   frag_color = vec4(result, 1.0);
 }

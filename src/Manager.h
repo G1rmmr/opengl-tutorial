@@ -15,10 +15,10 @@
 
 #pragma once
 
+#include "Object.h"
+
 #include <vector>
 #include <memory>
-
-#include "Object.h"
 
 struct Scene
 {

@@ -15,11 +15,11 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-
 #include "glad.h"
 #include <glm/gtc/type_ptr.hpp>
+
+#include <string>
+#include <string_view>
 
 struct Shader
 {
@@ -33,4 +33,6 @@ struct Shader
 
     void SetVec2(const std::string &name, const glm::vec2& vec) const;
     void SetTex(const std::string &name, const GLuint tex) const;
+
+    void SetFloat(const std::string &name, const GLfloat flt) const;
 };

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(opengl)
+project(white-ashes)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,11 +10,13 @@ file(GLOB SOURCES
     "${CMAKE_SOURCE_DIR}/src/*.c"
 )
 
-# Suppress deprecation warnings for macOS
-add_definitions(-DGL_SILENCE_DEPRECATION)
+if(APPLE)
+    add_definitions(-DGL_SILENCE_DEPRECATION)
+endif()
 
 # Find OpenGL
 find_package(OpenGL REQUIRED)
+find_package(SFML COMPONENTS Audio REQUIRED)
 
 # Platform-specific settings
 if(WIN32)
@@ -29,14 +31,18 @@ elseif(UNIX)
 endif()
 
 # Add executable
-add_executable(opengl ${SOURCES})
+add_executable(white-ashes ${SOURCES})
 
 # Include directories
-target_include_directories(opengl PRIVATE
+target_include_directories(white-ashes PRIVATE
     ${OPENGL_INCLUDE_DIRS}
     ${GLFW3_INCLUDE_DIRS}
     /usr/local/include/glm  # Assuming GLM is installed here
 )
 
 # Link libraries
-target_link_libraries(opengl PRIVATE ${OPENGL_LIBRARIES} glfw)
+target_link_libraries(white-ashes PRIVATE
+    ${OPENGL_LIBRARIES}
+    glfw
+    SFML::Audio
+    SFML::System)

@@ -25,7 +25,7 @@ class Camera
 public:
     inline static constexpr GLfloat YAW = -90.0f;
     inline static constexpr GLfloat PITCH = 0.0f;
-    inline static constexpr GLfloat SPEED = 2.5f;
+    inline static constexpr GLfloat SPEED = 0.2f;
     inline static constexpr GLfloat SENSITIVITY = 0.1f;
     inline static constexpr GLfloat ZOOM = 45.0f;
 
