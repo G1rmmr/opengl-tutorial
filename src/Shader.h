@@ -30,4 +30,7 @@ struct Shader
     void Use();
     void SetMat(const std::string& name, const glm::mat4& mat) const;
     void SetVec(const std::string &name, const glm::vec3& vec) const;
+
+    void SetVec2(const std::string &name, const glm::vec2& vec) const;
+    void SetTex(const std::string &name, const GLuint tex) const;
 };

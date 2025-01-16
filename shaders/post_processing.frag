@@ -1,4 +1,4 @@
-// Created on Fri Jan 10 2025
+// Created on Thu Jan 16 2025
 // © 2025 BLACKHAND Studio. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,28 +15,31 @@
 
 #version 330 core
 
-in vec3 in_pos;
-in vec3 in_norm;
-in vec3 in_color;
+in vec2 in_tex_coords;
 
 out vec4 frag_color;
 
-uniform vec3 light_pos;
-uniform vec3 light_color;
-uniform vec3 view_pos;
+uniform sampler2D screen_tex;
+uniform vec2 screen_res;
+
+float rand(vec2 co) {
+  return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
 
 void main() {
-  vec3 amb = 0.1 * light_color;
+  vec3 color = texture(screen_tex, in_tex_coords).rgb;
 
-  vec3 light_dir = normalize(light_pos - in_pos);
-  float _diff = max(0.0, dot(in_norm, light_dir));
-  vec3 diff = _diff * light_color;
+  float line_thick = 1.0;
+  float intensity = 0.2;
 
-  vec3 view_dir = normalize(view_pos - in_pos);
-  vec3 reflect_dir = reflect(-light_dir, in_norm);
-  float _spec = pow(max(dot(view_dir, reflect_dir), 0.0), 0.5);
-  vec3 spec = 5.0 * _spec * light_color;
+  float y = in_tex_coords.y * screen_res.y;
 
-  vec3 result = (amb + diff + spec + in_norm) * in_color;
-  frag_color = vec4(result, 1.0);
+  if (mod(y, 2.0) < line_thick)
+    color *= (1.0 - intensity);
+
+  float noise_strength = 0.05;
+  float noise = rand(in_tex_coords) * noise_strength;
+  color += vec3(noise);
+
+  frag_color = vec4(color, 1.0);
 }
