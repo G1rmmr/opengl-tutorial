@@ -50,8 +50,11 @@ public:
     }
 
 private:
+    const GLfloat target_frame_time = 0.0333f;
+
     std::unique_ptr<Manager> manager;
-    std::unique_ptr<Shader> shader;
+    std::unique_ptr<Shader> lighting_shader;
+    std::unique_ptr<Shader> post_shader;
     std::unique_ptr<Camera> cam;
 
     GLFWwindow* window;
@@ -64,6 +67,13 @@ private:
 
     GLfloat dt;
     GLfloat last_frame;
+
+    GLuint fbo;
+    GLuint color_text;
+    GLuint rbo;
+
+    GLuint q_vao;
+    GLuint q_vbo;
 
     GLboolean first_mouse;
 

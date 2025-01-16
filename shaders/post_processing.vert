@@ -1,4 +1,4 @@
-// Created on Fri Jan 10 2025
+// Created on Thu Jan 16 2025
 // © 2025 BLACKHAND Studio. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,28 +15,12 @@
 
 #version 330 core
 
-in vec3 in_pos;
-in vec3 in_norm;
-in vec3 in_color;
+layout(location = 0) in vec2 att_pos;
+layout(location = 1) in vec2 att_tex_coords;
 
-out vec4 frag_color;
-
-uniform vec3 light_pos;
-uniform vec3 light_color;
-uniform vec3 view_pos;
+out vec2 in_tex_coords;
 
 void main() {
-  vec3 amb = 0.1 * light_color;
-
-  vec3 light_dir = normalize(light_pos - in_pos);
-  float _diff = max(0.0, dot(in_norm, light_dir));
-  vec3 diff = _diff * light_color;
-
-  vec3 view_dir = normalize(view_pos - in_pos);
-  vec3 reflect_dir = reflect(-light_dir, in_norm);
-  float _spec = pow(max(dot(view_dir, reflect_dir), 0.0), 0.5);
-  vec3 spec = 5.0 * _spec * light_color;
-
-  vec3 result = (amb + diff + spec + in_norm) * in_color;
-  frag_color = vec4(result, 1.0);
+  in_tex_coords = att_tex_coords;
+  gl_Position = vec4(att_pos, 0.0, 1.0);
 }
